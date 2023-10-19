@@ -4,7 +4,7 @@
 	 ├─ 클라이언트 : 서버로 요청하는 프로그램, 웹브라우저
 	 └─ 서버 : 클라이언트의 요청을 받아 처리하는 주체
 
-![[Server_Client.png|500]]
+![서버와 클라이언트|500](https://i.imgur.com/6ShTdWN.png)
 
 ## 1.2 Database
 	Database
@@ -15,7 +15,7 @@
 	SQL(Structured Query Language)
 	 └─ 데이터베이스 관리 시스템에 명령을 내리기 위한 언어
 
-![[DBMS.png|500]]
+![DBMS|500](https://i.imgur.com/bfLFAPI.png)
 
 ## 1.3 아이피와 포트
 	IP
@@ -41,7 +41,7 @@
 	 └─ 라이브러리 : 개발을 하는 과정에서 필요한 기능을 구현할 때 사용함
 
 ## 1.5 백엔드 개발자의 업무
-![[백엔드_개발자_업무.png]]
+![](https://i.imgur.com/CjN5WCD.png)
 ### 1. 과제 할당
 	대부분의 부서에 과제를 할당하며 업무 시작
 
@@ -83,13 +83,26 @@
 	├─ C# : 닷넷 프레임워크
 	└─ 자바스크립트 : 익스프레스, NestJS
 
-![[백엔드 프로그래밍 언어.png|400]]
+![백엔드 프로그래밍 언어 |300](https://i.imgur.com/TC2CHsD.png)
 
 ## 1.7 자바 애너테이션(annotation)
 	자바로 작성한 코드에 추가하는 표식
 	@ 기호를 사용하여 표시
 	JDK 1.5 버전부터 사용할 수 있음
 
-![[대표적 애너테이션.png|500]]
+| 애너테이션 이름   |           설명                 |
+| ----------------- | ------------------------- |
+| @Override         | 선언된 메서드가 오버라이드 되었음 |
+| @Deprecated       | 더 이상 사용되지 않음          |
+| @SuppressWarnings | 컴파일 경고를 무시함           |
 
-![[오버라이드 예시.png|500]]
+오버라이드의 사용 예
+``` java
+public class A extends B {
+	@Override // 선언된 메서드가 오버라이드 되었음을 나타내는 애너테이션
+	public void print() {
+		System.out.println("Hello, World!");
+	}
+}
+```
+

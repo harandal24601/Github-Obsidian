@@ -29,6 +29,7 @@
 | 인메모리 데이터베이스 지원 | 지원하지 않음                                             | 인메모리 데이터베이스 자동 설정 지원 |
 | 서버                       | 프로젝트를 띄우는 서버(예: 톰캣, 제티)를 별도로 수동 설정 |    내장형 서버를 제공해 별도의 설정이 필요 없음          |
 
+---
 ## 2.2 스프링 콘셉트 공부하기
 
 	제어의 역전과 의존성 주입
@@ -84,16 +85,16 @@ public class SamsungTV {
 
 public class LgTV {
 	public void turnOn() {
-		System.out.println("SamsungTV---Turn On.");
+		System.out.println("LgTV---Turn On.");
 	}
 	public void turnOff() {
-		System.out.println("SamsungTV---Turn Off.");
+		System.out.println("LgTV---Turn Off.");
 	}
 	public void soundUp() {
-		System.out.println("SamsungTV---Sound Up.");
+		System.out.println("LgTV---Sound Up.");
 	}
 	public void soundDown() {
-		System.out.println("SamsungTV---Sound Down");
+		System.out.println("LgTV---Sound Down");
 	}
 }
 ```
@@ -123,3 +124,182 @@ public class LgTV {
 
 * LgTV 클래스를 사용하도록 코드 수정 시
 	메소드 시그니처가 달라서 TVUser클래스의 대부분 수정 필요
+	``` Java
+	# TVUser.java
+	package polymorphism;
+
+	public class TVUser {
+		public static void main(String[] args) {
+			LgTV tv = new LgTV();
+			tv.turnOn();
+			tv.soundUp();
+			tv.soundDown();
+			tv.turnOff();
+		}
+	}
+	```
+
+### 다형성 이용하기
+	다형성(Polymorphism)을 이용한 결합도 낮추기
+	 └─ 각 TV 클래스의 interface 제작
+
+![interface|500](https://i.imgur.com/hO3IcO1.png)
+
+``` Java
+# TV.java
+
+package polymorphism;
+
+public interface TV {
+	public void powerOn();
+	public void powerOff();
+	public void volumeUp();
+	public void volumeDown();
+}
+```
+``` Java
+# SamsungTV.java
+
+package polymorphism;
+
+public class SamsungTV implements TV{
+	public void powerOn() {
+		System.out.println("SamsungTV---Power On.");
+	}
+	public void powerOff() {
+		System.out.println("SamsungTV---Power Off.");
+	}
+	public void volumeUp() {
+		System.out.println("SamsungTV---Volume Up.");
+	}
+	public void volumeDown() {
+		System.out.println("SamsungTV---Volume Down");
+	}
+}
+```
+``` Java
+# LgTV.java
+
+package polymorphism;
+
+public class LgTV {
+	public void powerOn() {
+		System.out.println("LgTV---Power On.");
+	}
+	public void powerOff() {
+		System.out.println("LgTV---Power Off.");
+	}
+	public void volumeUp() {
+		System.out.println("LgTV---Volume Up.");
+	}
+	public void volumeDown() {
+		System.out.println("LgTV---Volume Down");
+	}
+}
+```
+
+* TVUser클래스는 interface를 사용하도록 수정
+* 그러나 TV 객체를 바꿀 때에는 소스코드를 수정해야 함
+
+``` Java
+# TVUser.java
+
+package polymorphism;
+
+public class TVUser {
+	public static void main(String[] args) {
+		TV tv = new SamsungTV();
+		tv.powerOn();
+		tv.volumeUp();
+		tv.volumeDown();
+		tv.powerOff();
+	}
+}
+```
+
+### 디자인 패턴 사용
+	factory 패턴 사용
+	 ├─ 클라이언트에서 사용할 객체 생성을 캡슐화 함
+	 └─ TVUser와 TV 사이를 느슨하게 함
+
+
+	BeanFactory 클래스
+	 └─ 매개 변수에 해당하는 객체를 생성하여 리턴
+ ``` Java
+ # BeanFactory 
+package polymorphism;
+
+public class BeanFactory {
+	public Object getBean(String beanName) {
+		if(beanName.equls("samsung")) { return new SaumsungTV(); }
+		else if(beanName.equals("lg")) {return new LgTV(); }
+		
+		return null;
+	}
+}
+```
+
+``` Java
+# TVUser.java
+
+package polymorphism;
+
+public class TVUser {
+	public static void main(String[] args) {
+		BeanFactory factory = new BeanFactory();
+		TV tv = (TV)factory.getBean(args[0]);
+		
+		tv.powerOn();
+		tv.volumeUp();
+		tv.volumeDown();
+		tv.powerOff();
+	}
+}
+```
+
+* 클라이언트 소스 코드를 수정하지 않고 실행되는 객체 변경
+![BeanFactory | 600](https://i.imgur.com/GN8gvdW.png)
+
+---
+	의존성 주입 = DI = Dependency Injection
+	 ├─ 빈 : 스프링 컨테이너가 관리하는 객체
+	 └─ 빈을 스프링 컨테이너로부터 주입 받아 사용(직접 객체를 생성하지 않음)
+
+``` Java
+public class A {
+	// A에서 B를 주입받음
+	@Autowired
+	B b;
+}
+```
+![DI | 600](https://i.imgur.com/AhkuoNv.png)
+
+### 스프링의 의존성 관리 방법
+	객체의 생성과 의존 관계를 컨테이너가 자동으로 관리 => 스프링 IoC의 핵심원리
+	스프링이 지원하는 IoC 형태
+	 ├─ Dependency Lookup
+	 └─ Dependency Injection
+
+![IoC | 600](https://i.imgur.com/S5ujIoe.png)
+
+	Dependency Lookup
+	 ├─ 컨테이너가 애플리케이션 운용에 필요한 객체를 생성하고
+	 │  클라이언트는 생성한 객체를 검색(lookup)하여 사용하는 방식
+	 ├─ 기존의 컨테이너 사용 방식
+	 └─ 실제 응용에서 잘 사용하지 않음
+
+	Dependency Injection
+	 ├─ 객체사이의 의존관계를 스프링 설정 파일에 등록된 정보를 바탕으로
+	 │  컨테이너가 자동 처리하는 방식
+	 ├─ 의존성 설정을 바꾸고 싶을 때 코드를 수정하지 않고 설정 파일을 수정함
+	 ├─ Setter Injection
+	 │ └─ setter 메소드를 이용
+	 └─ Constructor Injection
+	   └─ constructor 메소드 사용
+
+### 의존성(Dependency) 관계
+	객체와 객체간의 결합 관계
+	 └─ 한 객체에서 다른 객체의 변수나 메소드를 사용하고 싶을 떄?
+	   └─ 이용하려는 객체에 대한 객체 생성과 생성된 객체에 대한 레퍼런스 정보가 필요
+
+![](https://i.imgur.com/hbagwSa.png)

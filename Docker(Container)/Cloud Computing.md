@@ -75,3 +75,19 @@ Cloud Computing Architecture is divided into the physical system layer, virtuali
 Performing IT services by building a data center in the company to store its own data and solutions.
 It also includes disadvantages. Increased initial investment costs for all resources(including hardware), and increased ongoing management costs due to limited, inelastic capacity.
 ```
+
+<center>-- public cloud -- </center>
+
+``` public-cloud
+Public cloud mehotd is a method in which multiple users receive cloud resources such as servers and storage from cloud service providers such as AWS, GCP, and Azure thorugh the Internet.
+It is utility computer method as mentioned earlier, uses pay-as-you-go system method.
+Representative method
+ ├─ IaaS
+ ├─ PaaS
+ └─ SaaS
+```
+
+<center>-- private cloud --</center>
+```
+Cloud service which provides to specific customer or company, 
+```

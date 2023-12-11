@@ -80,6 +80,8 @@ IT 부서는 소프트웨어의 버전과 패치 등 애플리케이션 운영�
 ![](https://i.imgur.com/qUDDSCw.png)
 <center>도커 이미지 관련 명령어</center>
 
+---
+
 #### 도커 이미지 내려받기
 ```
 docker pull : 도커 허브 레지스트리에서 로컬로 이미지 내려받기
@@ -112,4 +114,74 @@ docker.io/library/debian:latest
  └─ debian:latest와 동일한 값으로 docker.io는 도커 허브의 이미지 저장소 주소를 나타냄.
     2장에서 다룬 도커 상세 정보를 제공하는 docker info 명령의 출력 정보 중
 	Registry: https://index.docker.io/v1/와 동일하다.  
+```
+
+| 옵션명(단축명)          | 설명                                                                                                                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| --all-tags, -a          | 저장소에 태그로 지정된 여러 이미지를 모두 다운로드 함<br>(다운로드 중 작업 중지를 할 경우 `Ctrl + C` 수행)                                                                    |
+| --disable-content-trust | 이미지 검증(verification) 작업 건너뛰기(기본값, true) <br> DCT(Docker Contents Trust)를 이용한 이미지 신뢰성 검증. <br> 작업으로 DOCKER_CONTENT_TRUST=1로 활성화(비활성화, 0) |
+| --platform              | 플랫폼 지정, 윈도우 도커에서 리눅스 이미지를 받아야 하는 경우 사용<br> (ex. --platform=linux).                                                                                |
+| --quiet, -q             | 이미지 다운로드 과정에서 화면에 나타나는 상세 출력 숨김                                                                                                                                                                              |     |     |
+
+``` how-to-download-docker-image
+# 명시적으로 최신 버전 지정.
+$ docker pull debian:latest
+
+# 이미지 식별 정보인 다이제스트 지정.
+$ docker pull debian:sha256:28579893344284...94cc940198258
+
+# 도커 허브 레지스트리 명시적 지정.
+$ docker pull library/debian:latest
+$ docker pull docker.io/library/debian:latest
+$ docker pull index.docker.io/library/debian:latest
+
+# 외부 레지스트리 주소를 이용하는 방법(예로 구글에서 제공하는 샘플 애플리케이션 이미지 지정).
+# 주의할 것은 웹 주소 URL에서 도메인 주소의 시작인 http://를 붙이지 않고 이미지 주소를 써야 한다는 점이다.
+$ docker pull gcr.io/google-samples/hello-app:1.0
+```
+
+---
+
+#### 도커 이미지 세부 정보 조회
+```
+도커 오브젝트(이미지, 컨테이너 등)에 대한 세부 정보 조회를 위해 docker image inspect, docker image history. 물리적으로 호스트 운영체제에 저장된 영역을 이용한다.
+```
+
+`docker image inspect [OPTIONS] IMAGE [IMAGE...]`
+이 명령의 출력 결과는 JSON 언어 형태로 출력되는 정보가 많기 때문에 포맷 옵션을 이용하여 원하는 정보만 출력할 수 있다.
+
+##### docker image inspect 명령 옵션
+
+| 옵션명(단축명) | 설명 |
+| -------------- | ---- |
+| --format, -f   | JSON 형식의 정보 중 지정한 형식의 정보만 출력할 수 있고, <br> {} 중괄호 형식과 대소문자에 유의해야 한다.     |
+
+```
+출력되는 세부 내용 중 주요 정보
+ ├─ iamge ID : "Id"
+ ├─ 생성일 : "Created"
+ ├─ Docker 버전 : "DockerVersion"
+ ├─ CPU 아키텍처 : "Architecture"
+ ├─ 이미지 다이제스트 정보 : "RootFS"
+ └─ 이미지 레이어 저장 정보 : "GraphDriver"
+```
+![](https://i.imgur.com/o6e8vox.png)
+![](https://i.imgur.com/AH7E2OX.png)
+![](https://i.imgur.com/0Tiqo7W.png)
+![](https://i.imgur.com/6EP1Fqz.png)
+![](https://i.imgur.com/zqib8bh.png)
+
+`docker image history [OPTIONS] IMAGE`
+이 명령을 통해 현재 이미지 구성을 위해 사용된 레이블$_{label}$ 정보와 각 레이어의 수행 명령, 크기 등을 조회할 수 있다.
+
+이미지를 구성하고 있는 레이어와 실행 정보에 관련된 내용
+![](https://i.imgur.com/mKgLAeB.png)
+
+```
+CREATED BY
+ ├─ 특정 이미지를 구성하기 위해 사용된 명령과 환경 설정 정보 등을 볼 수 있음
+ ├─ 정보 중 용량을 가지고 있는 라인이 세 번째로 소개할 레이어
+ ├─ CMD, EXPOSE, ENV, WORKDIR 등의 명령을 통해 베이스 이미지에 필요한 설정 정보를
+ │  결합하여 새로운 이미지를 만들게 된다.
+ 
 ```

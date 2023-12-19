@@ -204,4 +204,10 @@ CREATED BY
 ```
 
 ---
-#### sadfasdfasdfasdfasd 
+#### 도커 이미지 태그 설정과 도커 로그인 및 로그아웃
+
+도커 태그는 원본 이미지에 참조 이미지 이름을 붙이는 명령이다
+`docker tag 원본 이미지[:태그] 참조 이미지[:태그]`
+
+![](https://i.imgur.com/Pu1Sxqi.png)
+![](https://i.imgur.com/zMD9yqj.png)
